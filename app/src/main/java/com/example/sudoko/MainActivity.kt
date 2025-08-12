@@ -74,6 +74,12 @@ class SudokuViewModel : ViewModel() {
     var message by mutableStateOf<String?>(null)
         private set
 
+    var elapsedTime by mutableStateOf<Long>(0L)
+        private set
+
+    private var startTime: Long = 0L
+    private var endTime: Long = 0L
+
     init {
         newGame(Difficulty.MEDIUM)
     }
@@ -85,6 +91,9 @@ class SudokuViewModel : ViewModel() {
             selectedCell = null
             notesMode = false
             message = null
+            elapsedTime = 0L
+            startTime = System.currentTimeMillis()
+            endTime = 0L
         }
     }
 
@@ -106,13 +115,22 @@ class SudokuViewModel : ViewModel() {
                 boardState = boardState.setValue(r, c, n)
                 if (boardState.isComplete()) {
                     if (SudokuGenerator.isValidSolution(boardState.values)) {
-                        message = "You solved it!"
+                        endTime = System.currentTimeMillis()
+                        elapsedTime = endTime - startTime
+                        message = "You solved it in ${formatTime(elapsedTime)}"
                     } else {
                         message = "Board complete but invalid"
                     }
                 }
             }
         }
+    }
+
+    private fun formatTime(ms: Long): String {
+        val seconds = (ms / 1000) % 60
+        val minutes = (ms / (1000 * 60)) % 60
+        val hours = (ms / (1000 * 60 * 60))
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
     fun clearCell() {
