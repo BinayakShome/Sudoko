@@ -366,10 +366,16 @@ fun SudokuGrid(board: SudokuBoard, selected: Pair<Int, Int>?, onCellSelected: (I
                         board.fixed[r][c] -> Color(0xFFF3F3F3)
                         else -> Color.White
                     }
+
                     Box(
                         modifier = Modifier
                             .size(40.dp)
-                            .padding(1.dp)
+                            .padding(
+                                start = if (c % 3 == 0) 6.dp else 1.dp,
+                                top = if (r % 3 == 0) 6.dp else 1.dp,
+                                end = if (c == 8) 6.dp else 1.dp,
+                                bottom = if (r == 8) 6.dp else 1.dp
+                            )
                             .background(bg)
                             .border(BorderStroke(1.dp, Color.LightGray), shape = RoundedCornerShape(4.dp))
                             .clickable { onCellSelected(r, c) },
